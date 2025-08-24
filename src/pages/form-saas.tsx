@@ -309,7 +309,6 @@ const FormSaaS = () => {
                     sideOffset={-200}
                     align="start"
                     avoidCollisions={false}
-                    sticky="partial"
                   >
                     <Command>
                       <CommandInput placeholder="Search country..." />
