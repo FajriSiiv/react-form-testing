@@ -34,6 +34,62 @@ interface UserSaaS {
   skills: string[];
 }
 
+const hobbies = [
+  "Reading",
+  "Writing",
+  "Drawing",
+  "Painting",
+  "Cooking",
+  "Baking",
+  "Gardening",
+  "Hiking",
+  "Cycling",
+  "Running",
+  "Swimming",
+  "Yoga",
+  "Dancing",
+  "Singing",
+  "Playing Guitar",
+  "Playing Piano",
+  "Photography",
+  "Traveling",
+  "Fishing",
+  "Camping",
+  "Chess",
+  "Video Gaming",
+  "Board Games",
+  "Knitting",
+  "Sewing",
+  "Calligraphy",
+  "Collecting Stamps",
+  "Collecting Coins",
+  "Watching Movies",
+  "Watching Anime",
+  "Watching Sports",
+  "Martial Arts",
+  "Fitness Training",
+  "Meditation",
+  "Blogging",
+  "Podcasting",
+  "Learning Languages",
+  "Coding",
+  "Robotics",
+  "Volunteering",
+  "Bird Watching",
+  "Skateboarding",
+  "Surfing",
+  "Snowboarding",
+  "Skiing",
+  "Cooking New Recipes",
+  "DIY Projects",
+  "3D Printing",
+  "Origami",
+  "Pet Training",
+  "Astrology",
+  "Astronomy"
+];
+
+
 const FormSaaS = () => {
   const [date, setDate] = useState<Date | undefined>(undefined)
   const [openDate, setOpenDate] = useState(false)
@@ -163,6 +219,8 @@ const FormSaaS = () => {
           )}
         </div>
 
+
+
         <div className="grid grid-cols-2 py-3  gap-5">
           <div className="flex flex-col gap-2 col-span-1">
             <Label htmlFor="gender" className="font-medium">Gender</Label>
@@ -218,7 +276,73 @@ const FormSaaS = () => {
             )}
           </div>
         </div>
+        <div className="flex flex-col gap-2 py-3 col-span-1 relative">
+          <Label htmlFor="hobby" className="font-medium">Hobbies</Label>
+          <Controller
+            name="hobby"
+            control={control}
+            rules={{ required: "hobbies is required" }}
+            render={({ field }) => {
 
+
+              return (
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      aria-expanded={!!field.value}
+                      className="w-full justify-between"
+                    >
+                      {field.value ? (
+                        <div className="flex justify-center items-center">
+                          {field?.value.toString()}
+                        </div>
+                      ) : (
+                        "Pick your hobbies"
+                      )}
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-full pt-5"
+                    side="right"
+                    sideOffset={-200}
+                    align="start"
+                    avoidCollisions={false}
+                    sticky="partial"
+                  >
+                    <Command>
+                      <CommandInput placeholder="Search country..." />
+                      <CommandEmpty>No country found.</CommandEmpty>
+                      <CommandGroup>
+                        {
+                          hobbies?.map((hobby: string, index) => (
+                            <CommandItem
+                              key={index}
+                              value={hobby}
+                              onSelect={() => field.onChange(hobby)}
+                            >
+                              <Check
+                                className={cn(
+                                  "mr-2 h-4 w-4",
+                                  field.value === hobby ? "opacity-100" : "opacity-0"
+                                )}
+                              />
+                              {hobby}
+                            </CommandItem>
+                          )
+                          )}
+                      </CommandGroup>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+              )
+            }}
+          />
+          {errors.country && (
+            <ErrorHandlingForm text={errors.country.message} />
+          )}
+        </div>
         <div className="flex pt-10 pb-0 px-2 justify-end items-center">
           <Button type="submit" className="">Submit</Button>
         </div>
