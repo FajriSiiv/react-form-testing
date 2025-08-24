@@ -22,6 +22,7 @@ import { useCountries } from "@/hooks/useLanguages";
 import type { Country } from "@/lib/api/getLanguages";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 import { cn } from "@/lib/utils";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface UserSaaS {
   fullname: string;
@@ -98,7 +99,8 @@ const FormSaaS = () => {
   const { control, register, handleSubmit, setValue, formState: { errors } } = useForm<UserSaaS>({
     defaultValues: {
       tanggalLahir: undefined,
-      gender: undefined
+      gender: undefined,
+      hobbies: [],
     }
   });
 
@@ -279,64 +281,45 @@ const FormSaaS = () => {
         <div className="flex flex-col gap-2 py-3 col-span-1 relative">
           <Label htmlFor="hobby" className="font-medium">Hobbies</Label>
           <Controller
-            name="hobby"
+            name="hobbies"
             control={control}
-            rules={{ required: "hobbies is required" }}
-            render={({ field }) => {
-
-
-              return (
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      aria-expanded={!!field.value}
-                      className="w-full justify-between"
-                    >
-                      {field.value ? (
-                        <div className="flex justify-center items-center">
-                          {field?.value.toString()}
-                        </div>
-                      ) : (
-                        "Pick your hobbies"
-                      )}
-                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-full pt-5"
-                    side="right"
-                    sideOffset={-200}
-                    align="start"
-                    avoidCollisions={false}
-                  >
-                    <Command>
-                      <CommandInput placeholder="Search country..." />
-                      <CommandEmpty>No country found.</CommandEmpty>
-                      <CommandGroup>
-                        {
-                          hobbies?.map((hobby: string, index) => (
-                            <CommandItem
-                              key={index}
-                              value={hobby}
-                              onSelect={() => field.onChange(hobby)}
-                            >
-                              <Check
-                                className={cn(
-                                  "mr-2 h-4 w-4",
-                                  field.value === hobby ? "opacity-100" : "opacity-0"
-                                )}
-                              />
-                              {hobby}
-                            </CommandItem>
-                          )
-                          )}
-                      </CommandGroup>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
-              )
-            }}
+            render={({ field }) => (
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className="w-full justify-between">
+                    {field.value.length > 0
+                      ? `${field.value.length > 3
+                        ? field.value.slice(0, 3).join(", ") + ", ..."
+                        : field.value.join(", ")}`
+                      : "Select your hobbies"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-full max-h-[200px] overflow-y-auto">
+                  <div className="flex flex-col gap-2">
+                    {hobbies.map((hobby) => (
+                      <label
+                        key={hobby}
+                        className="flex items-center space-x-2 cursor-pointer"
+                      >
+                        <Checkbox
+                          checked={field.value.includes(hobby)}
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              field.onChange([...field.value, hobby])
+                            } else {
+                              field.onChange(
+                                field.value.filter((v: string) => v !== hobby)
+                              )
+                            }
+                          }}
+                        />
+                        <span>{hobby}</span>
+                      </label>
+                    ))}
+                  </div>
+                </PopoverContent>
+              </Popover>
+            )}
           />
           {errors.country && (
             <ErrorHandlingForm text={errors.country.message} />
