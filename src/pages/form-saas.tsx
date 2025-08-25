@@ -35,7 +35,7 @@ interface UserSaaS {
   skills: string[];
 }
 
-const hobbies = [
+const hobbies: string[] = [
   "Reading",
   "Writing",
   "Drawing",
@@ -90,6 +90,9 @@ const hobbies = [
   "Astronomy"
 ];
 
+const skills: string[] = ['React.JS', 'VueJS', "Javascript", 'Tailwindcss', 'Laravel', 'PHP', 'C#', 'C++', 'NodeJS', 'NextJS', 'NestJS']
+
+
 
 const FormSaaS = () => {
   const [date, setDate] = useState<Date | undefined>(undefined)
@@ -101,6 +104,7 @@ const FormSaaS = () => {
       tanggalLahir: undefined,
       gender: undefined,
       hobbies: [],
+      skills: []
     }
   });
 
@@ -321,8 +325,57 @@ const FormSaaS = () => {
               </Popover>
             )}
           />
-          {errors.country && (
-            <ErrorHandlingForm text={errors.country.message} />
+          {errors.hobbies && (
+            <ErrorHandlingForm text={errors.hobbies.message} />
+          )}
+        </div>
+
+        <div className="flex flex-col gap-2 py-3 col-span-1 relative">
+          <Label htmlFor="hobby" className="font-medium">Skills</Label>
+          <Controller
+            name="skills"
+            control={control}
+            render={({ field }) => (
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className="w-full justify-between">
+                    {field.value.length > 0
+                      ? `${field.value.length > 3
+                        ? field.value.slice(0, 3).join(", ") + ", ..."
+                        : field.value.join(", ")}`
+                      : "Select your skills"}
+
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-full max-h-[200px] overflow-y-auto">
+                  <div className="flex flex-col gap-2">
+                    {skills.map((skill) => (
+                      <label
+                        key={skill}
+                        className="flex items-center space-x-2 cursor-pointer"
+                      >
+                        <Checkbox
+                          checked={field.value.includes(skill)}
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              field.onChange([...field.value, skill])
+                            } else {
+                              field.onChange(
+                                field.value.filter((v: string) => v !== skill)
+                              )
+                            }
+                          }}
+                        />
+                        <span>{skill}</span>
+                      </label>
+                    ))}
+                  </div>
+                </PopoverContent>
+              </Popover>
+            )}
+          />
+          {errors.skills && (
+            <ErrorHandlingForm text={errors.skills.message} />
           )}
         </div>
         <div className="flex pt-10 pb-0 px-2 justify-end items-center">
