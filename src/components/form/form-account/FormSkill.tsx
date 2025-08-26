@@ -22,6 +22,7 @@ const FormSkill: React.FC<FormSkillsProps> = ({ control, errors }) => {
       <Controller
         name="skills"
         control={control}
+        rules={{ required: "Skills is required (atleast 1 skill)" }}
         render={({ field }) => (
           <Popover>
             <PopoverTrigger asChild>

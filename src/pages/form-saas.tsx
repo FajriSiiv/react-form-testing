@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { useCountries } from "@/hooks/useLanguages";
 import FormFullname from "@/components/form/form-account/FormFullName";
@@ -9,6 +8,8 @@ import FormGender from "@/components/form/form-account/FormGender";
 import FormDateOfBirth from "@/components/form/form-account/FormDateOfBirth";
 import FormHobby from "@/components/form/form-account/FormHobby";
 import FormSkill from "@/components/form/form-account/FormSkill";
+import { ResultDialog } from "@/components/dialog/result-form";
+import { useState } from "react";
 
 export interface UserSaaS {
   fullname: string;
@@ -23,8 +24,9 @@ export interface UserSaaS {
 
 const FormSaaS = () => {
   const { data: countries, loading } = useCountries();
+  const [submitData, setSubmitData] = useState<UserSaaS | null>(null)
 
-  const { control, register, handleSubmit, setValue, formState: { errors } } = useForm<UserSaaS>({
+  const { control, register, handleSubmit, setValue, formState: { errors, isSubmitting, isValid } } = useForm<UserSaaS>({
     defaultValues: {
       tanggalLahir: undefined,
       gender: undefined,
@@ -34,10 +36,13 @@ const FormSaaS = () => {
       country: "",
       email: "",
       username: ""
-    }
+    },
+    mode: "onChange"
   });
 
-  const onSubmit: SubmitHandler<UserSaaS> = (data) => console.log(data)
+  const onSubmit: SubmitHandler<UserSaaS> = (data) => {
+    setSubmitData(data)
+  }
 
   return (
     <div className="w-full">
@@ -77,10 +82,12 @@ const FormSaaS = () => {
           <FormSkill control={control} errors={errors} />
         </div>
         <div className="flex pt-10 pb-0 px-2 justify-end items-center">
-          <Button type="submit" className="">Submit</Button>
+          <ResultDialog isSubmitting={isSubmitting} isValid={isValid} submitData={submitData} />
         </div>
 
       </form>
+
+
     </div>
   )
 }

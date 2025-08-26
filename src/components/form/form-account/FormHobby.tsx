@@ -75,6 +75,7 @@ const FormHobby: React.FC<FormHobbyProps> = ({ errors, control }) => {
       <Controller
         name="hobbies"
         control={control}
+        rules={{ required: "Hobbies is required (atleast 1 hobby)" }}
         render={({ field }) => (
           <Popover>
             <PopoverTrigger asChild>
